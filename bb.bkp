@@ -1,3 +1,5 @@
+bb.bkp
+
 import pygame
 
 grid = [[None] * 20] * 20
@@ -90,17 +92,17 @@ def checkEmpty(type,x,y):
     if type == 'machine' or type == 'source' or type == 'output': #check 2x2
             if grid[x][y] == None and grid[x + 1][y] == None and grid[x][y+1] == None and grid[x + 1][y+1] == None:
                 return True
-#
-# def fillGrid(type,x,y):
-#     if type == 'mover': #check 1x2
-#         grid[x][y] == 'mover'
-#         grid[x][y+1] == 'mover'
-#
-#     elif type == 'machine': #check 2x2
-#             grid[x][y] = 'machine'
-#             grid[x + 1][y] == 'machine'
-#             grid[x][y+1] == 'machine'
-#             grid[x + 1][y+1] == 'machine'
+
+def fillGrid(type,x,y):
+    if type == 'mover': #check 1x2
+        grid[x][y] == 'mover'
+        grid[x][y+1] == 'mover'
+
+    elif type == 'machine': #check 2x2
+            grid[x][y] = 'machine'
+            grid[x + 1][y] == 'machine'
+            grid[x][y+1] == 'machine'
+            grid[x + 1][y+1] == 'machine'
 
 
 
@@ -160,26 +162,27 @@ def main():
                 else: #check grid
                     if placeMover == True or placeMachine == True:
                         if placeMover == True:
-                            # xn = clickToGrid(x)
-                            # yn = clickToGrid(y)
-                            # if checkEmpty('mover',xn,yn) == True:
-                            objectList.append(Mover(x,y))
-                                # fillGrid('mover',xn,yn)
-                            placeMachine = False
-                            placeMover = False
-
+                            xn = clickToGrid(x)
+                            yn = clickToGrid(y)
+                            if checkEmpty('mover',xn,yn) == True:
+                                objectList.append(Mover(x,y))
+                                fillGrid('mover',xn,yn)
+                                placeMachine = False
+                                placeMover = False
+                            else:
+                                pass
                             #mover.placeMover
                         else:
                             #placeMachine
-                            # xn = clickToGrid(x)
-                            # yn = clickToGrid(y)
-                            # if checkEmpty('machine',xn,yn) == True:
-                            objectList.append(Machine(x,y))
-                                # fillGrid('machine',xn,yn)
-                            placeMachine = False
-                            placeMover = False
-                            # else:
-                            #     pass
+                            xn = clickToGrid(x)
+                            yn = clickToGrid(y)
+                            if checkEmpty('machine',xn,yn) == True:
+                                objectList.append(Machine(x,y))
+                                fillGrid('machine',xn,yn)
+                                placeMachine = False
+                                placeMover = False
+                            else:
+                                pass
 
 
 
@@ -195,7 +198,7 @@ def main():
                             # if item == 6:   #output
                             # if item == 7:   #play
                             # if item == 8:   #ff
-                        pass
+                            pass
 
 
             if event.type == pygame.QUIT:
@@ -222,7 +225,7 @@ def main():
 
         if placeMover == True:
             s = pygame.mouse.get_pos()
-            pygame.draw.rect(screen, (7, 112, 235), (s[0], s[1], 30, 60))
+            `pygame.draw.rect(screen, (7, 112, 235), (s[0], s[1], 30, 60))
 
         for gamePiece in objectList:
             gamePiece.render(screen)
