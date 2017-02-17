@@ -1,5 +1,8 @@
 import pygame
 
+grid = [[None] * 20] * 20
+
+
 class Board(object):
     def __init__(self):
         self.color = (0,0,0)
@@ -30,11 +33,13 @@ class gamePiece(object):
         screen.blit(self.img, (self.x, self.y))
 
 class Machine(gamePiece):
-    def __init__(self):
+    def __init__(self, x, y):
         self.type = "blank"
-        self.x = 0
-        self.y = 0
-
+        self.x = x
+        self.y = x
+    def render(self, screen):
+        #screen.blit(self.img, (self.x, self.y))
+        pygame.draw.rect(screen, (205, 64, 20), ((self.x, self.y), (self.x+60, self.y + 60)))
 
 class Mover(gamePiece):
     def __init__(self, x, y):
@@ -65,63 +70,23 @@ class Button(object):
         self.x = 0
         self.y = 0
 
-def roundClick(self, x, y):
-    if x % 30 != 0:
-         x = x - (x%20)
-    if y % 30 != 0:
-         y = y - (y%20)
-    item = [x,y]
-    return item
-
-def checkClick(self, x, y):
-        item = grid[x][y]
-        if (x <= 800 and x >= 600 and y <=200 and y >= 100):  #machine button
-            placeMachine = True
-        if (x <= 800 and x >= 600 and y <=300 and y >= 201):  #mover button
-            placeMover = True
-
-        if placeMover == True or placeMachine == True:
-            if placeMover == True:
-                item = roundClick(x,y)
-                x = item[0]
-                y = item[1]
-                if checkEmpty('mover',x,y) == True:
-                    objectList.append(Mover(x,y))
-                else:
-                    pass
-                #mover.placeMover
-            else:
-                #placeMachine
-                item = roundClick(x,y)
-                x = item[0]
-                y = item[1]
-                if checkEmpty('machine',x,y) == True:
-                    objectList.append(Machine(x,y))
-                else:
-                    pass
+def roundClick(a):
+    while a % 30 != 0:
+        a -= 1
+    return a
 
 
-
-        else:
-            if (item != None):
-                # if item == 1:   #button
-                #     if button.type == 'machine':
-                #     if button.type == 'mover':
-                # if item == 2:   #machine
-                # if item == 3:   #mover
-                # if item == 4:   #belt
-                # if item == 5:   #source
-                # if item == 6:   #output
-                # if item == 7:   #play
-                # if item == 8:   #ff
-                pass
+def clickToGrid(g):
+    g = roundClick(g) / 30
+    return g
 
 
-def checkEmpty(self,type,x,y):
+def checkEmpty(type,x,y):
     if type == 'mover': #check 1x2
         if grid[x][y] == None and grid[x][y+1] == None:
             return True
     if type == 'machine' or type == 'source' or type == 'output': #check 2x2
+            print grid[0][0]
             if grid[x][y] == None and grid[x + 1][y] == None and grid[x][y+1] == None and grid[x + 1][y+1] == None:
                 return True
 
@@ -133,13 +98,16 @@ def main():
     height = 600
     white_color = (255, 255, 255)
     black_color = (0,0,0)
+
     #setup
     pygame.init()
     screen = pygame.display.set_mode((width, height))
-    pygame.display.set_caption('My Game')
+    pygame.display.set_caption('PyFactory 2021')
     clock = pygame.time.Clock()
     board = Board()
-    grid = [[None] * 20] * 20
+
+    #graphics
+    background_image = pygame.image.load('images/concrete2.png').convert_alpha()
 
     #text setup
     font = pygame.font.Font(None, 25)
@@ -150,6 +118,9 @@ def main():
     machineBtext = font.render("Machine", True, (0,0,0))
     moverBtext = font.render("Movers", True, (0,0,0))
 
+    #misc
+    placeMachine = False
+    placeMover = False
     objectList =[]
 
 
@@ -165,7 +136,54 @@ def main():
             # Event handling
             if event.type == pygame.MOUSEBUTTONDOWN:
                 x, y = event.pos
-                checkClick(x,y)
+                if x > 600:
+                    placeMover = False
+                    placeMachine = False
+                    if (x <= 800 and x >= 600 and y <=200 and y >= 100):  #machine button
+                        placeMachine = True
+                    elif (x <= 800 and x >= 600 and y <=300 and y >= 201):  #mover button
+                        placeMover = True
+                else:
+                    if placeMover == True or placeMachine == True:
+                        if placeMover == True:
+                            print "test1"
+                            x = clickToGrid(x)
+                            y = clickToGrid(y)
+                            if checkEmpty('mover',x,y) == True:
+                                print "test2"
+                                objectList.append(Mover(x,y))
+                                placeMachine = False
+                                placeMover = False
+                            else:
+                                print "test"
+                                pass
+                            #mover.placeMover
+                        else:
+                            #placeMachine
+                            x = clickToGrid(x)
+                            y = clickToGrid(y)
+                            if checkEmpty('machine',x,y) == True:
+                                objectList.append(Machine(x,y))
+                                placeMachine = False
+                                placeMover = False
+                            else:
+                                pass
+
+
+
+                    else:
+                    #    if (item != None):
+                            # if item == 1:   #button
+                            #     if button.type == 'machine':
+                            #     if button.type == 'mover':
+                            # if item == 2:   #machine
+                            # if item == 3:   #mover
+                            # if item == 4:   #belt
+                            # if item == 5:   #source
+                            # if item == 6:   #output
+                            # if item == 7:   #play
+                            # if item == 8:   #ff
+                            pass
 
 
             if event.type == pygame.QUIT:
@@ -177,6 +195,7 @@ def main():
         # Draw background
 
         screen.fill(white_color)
+        screen.blit(background_image, (0,0))
         board.DrawBoard(screen)
         screen.blit(pauseText, (607,550 ))
         screen.blit(playText, (680,550 ))
@@ -184,6 +203,9 @@ def main():
         screen.blit(titleText, (607,10))
         screen.blit(machineBtext,(605,105))
         screen.blit(moverBtext,(605,205))
+
+        for gamePiece in objectList:
+            gamePiece.render(screen)
         # Game display
 
         pygame.display.update()
