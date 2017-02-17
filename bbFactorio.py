@@ -37,10 +37,10 @@ class Machine(gamePiece):
 
 
 class Mover(gamePiece):
-    def __init__(self):
+    def __init__(self, x, y):
         self.type = "blank"
-        self.x = 0
-        self.y = 0
+        self.x = x
+        self.y = y
 
 class Belt(gamePiece):
     def __init__(self):
@@ -66,38 +66,64 @@ class Button(object):
         self.y = 0
 
 def roundClick(self, x, y):
-    if x % 20 != 0:
+    if x % 30 != 0:
          x = x - (x%20)
-    if y % 20 != 0:
+    if y % 30 != 0:
          y = y - (y%20)
-
+    item = [x,y]
+    return item
 
 def checkClick(self, x, y):
         item = grid[x][y]
-        if (x <= 800 and x >= 600 and y <=200 and >= 100):  #machine button
+        if (x <= 800 and x >= 600 and y <=200 and y >= 100):  #machine button
             placeMachine = True
-        if (x <= 800 and x >= 600 and y <=300 and >= 201):  #mover button
+        if (x <= 800 and x >= 600 and y <=300 and y >= 201):  #mover button
             placeMover = True
 
         if placeMover == True or placeMachine == True:
             if placeMover == True:
+                item = roundClick(x,y)
+                x = item[0]
+                y = item[1]
+                if checkEmpty('mover',x,y) == True:
+                    objectList.append(Mover(x,y))
+                else:
+                    pass
                 #mover.placeMover
             else:
                 #placeMachine
+                item = roundClick(x,y)
+                x = item[0]
+                y = item[1]
+                if checkEmpty('machine',x,y) == True:
+                    objectList.append(Machine(x,y))
+                else:
+                    pass
+
+
+
         else:
             if (item != None):
-                if item == 1:   #button
-                    if button.type = 'machine':
-                    if button.type = 'mover':
-                if item == 2:   #machine
-                if item == 3:   #mover
-                if item == 4:   #belt
-                if item == 5:   #source
-                if item == 6:   #output
-                if item == 7:   #play
-                if item == 8:   #ff
+                # if item == 1:   #button
+                #     if button.type == 'machine':
+                #     if button.type == 'mover':
+                # if item == 2:   #machine
+                # if item == 3:   #mover
+                # if item == 4:   #belt
+                # if item == 5:   #source
+                # if item == 6:   #output
+                # if item == 7:   #play
+                # if item == 8:   #ff
+                pass
 
 
+def checkEmpty(self,type,x,y):
+    if type == 'mover': #check 1x2
+        if grid[x][y] == None and grid[x][y+1] == None:
+            return True
+    if type == 'machine' or type == 'source' or type == 'output': #check 2x2
+            if grid[x][y] == None and grid[x + 1][y] == None and grid[x][y+1] == None and grid[x + 1][y+1] == None:
+                return True
 
 
 
@@ -124,7 +150,7 @@ def main():
     machineBtext = font.render("Machine", True, (0,0,0))
     moverBtext = font.render("Movers", True, (0,0,0))
 
-
+    objectList =[]
 
 
 
